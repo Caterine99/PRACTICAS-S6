@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmargins{2.5cm}       % margen izquierdo
+{1.5cm}                  % margen superior
+{16.5cm}                 % anchura del texto
+{23.42cm}                % altura del texto
+{10pt}                   % altura de los encabezados
+{1cm}                    % espacio entre el texto y los encabezados
+{0pt}                    % altura del pie de página
+{2cm}                    % espacio entre el texto y el pie de página
+
+
+\begin{document}
+
+\textbf{UNIDAD 3: Práctica 14 - Distribuciones de probabilidad discreta Usando la interfaz gráfica (R-Commander)}
+\vspace{1cm}\\
+\section{CÁLCULO DE PROBABILIDADES}
+\vspace{1cm}
+
+\textbf{Ejemplo 1:}
+Si un estudiante responde al azar un examen de 8 preguntas de verdadero o falso.\\
+
+a) ¿Cuál es la probabilidad de que acierte 4?\\
+La variable X="número de aciertos" sigue una distribución Binomial (suponiendo que la probabilidad de acierto en cada una de las preguntas es la misma y que cada pregunta se responde de manera independiente) de parámetros n = 8 y p =1/ 2.\\
+
+El procedimiento para obtener la probabilidad con la interfaz gráfica es el siguiente. En el Menú Distribuciones se elige la opción Distribuciones discretas, y dentro de éste se elige Distribución Binomial; finalmente se elige la opción Probabilidades binomiales… tal y como se muestra en la siguiente figura
+
+<<>>=
+library(Rcmdr)
+library(car)
+library(RcmdrMisc)
+@
+
+Tabla de probabilidades binomiales
+<<>>=
+local({
+  .Table <- data.frame(Probability=dbinom(0:8, size=8, prob=0.5))
+  rownames(.Table) <- 0:8 
+  print(.Table)
+})
+@
+
+\emph{Note que el procedimiento anterior generará un cuadro en donde se muestra la probabilidad binomial para cada valor que va desde 0 a 8 (solamente debemos tomar el que corresponde a 4).}\\
+
+
+b) ¿Cuál es la probabilidad de que acierte a lo sumo 2?\\
+
+Para obtener las probabilidades acumuladas de una variable binomial el procedimiento es el siguiente: en el Menú Distribuciones, seleccionamos nuevamente Distribuciones discretas, posteriormente seleccionamos Distribuciones binomial, y finalmente se elige la opción Probabilidades binomiales acumuladas.\\
+
+Binomial Cumulative Probabilities
+<<>>=
+pbinom(c(2), size=8, prob=0.5, lower.tail=TRUE)
+@
+
+c) ¿Cuál es la probabilidad de que acierte 5 o más?\\
+
+Para calcular la probabilidad, realizamos el procedimiento descrito en el apartado anterior; sin embargo, ahora debe especificarse la opción de cola derecha (pues es la probabilidad acumulada de 5 en adelante); las demás opciones del cuadro se llenan considerando las mismo comentarios que en el apartado anterior.
+<<>>=
+pbinom(c(4), size=8, prob=0.5, lower.tail=FALSE)
+@
+
+\textbf{Ejemplo 2:}
+Una cierta área de Estados Unidos es afectada, en promedio, por 6 huracanes al año (asumiendo que dicha variable tiene una distribución de Poisson de parámetro $\lambda=6$). Encuentre la probabilidad de
+que en un determinado año esta área sea afectada por:\\
+
+a) Menos de 4 huracanes.\\
+
+Para calcular la probabilidad de menos de 4 huracanes, el procedimiento es similar al descrito para la distribución binomial, únicamente eligiendo la Distribución de Poisson en lugar de la Distribución binomial, eligiendo claro esta la opción Probabilidad de Poisson acumuladas.\\
+
+
+
+<<>>=
+#Poisson Cumulative Probabilities
+ppois(c(3), lambda=6, lower.tail=TRUE)
+@
+
+
+b) Represente gráficamente la función de probabilidad de la variable aleatoria X que mide el número de huracanes por año.\\
+
+La interfaz gráfica de R permite visualizar gráficamente la distribución de probabilidad de cualquier distribución de probabilidad. En especial, si queremos visualizar gráficamente el comportamiento de una distribución de Poisson de parámetro $\lambda = 6$ . El procedimiento es el siguiente; en el Menú Distribuciones seleccionamos la opción Distribuciones discretas, posteriormente la opción Distribución de Poisson, y finalmente Gráfica de la distribución de Poisson… tal y como se muestra en la figura siguiente.\\
+
+\textbf{Gráfica de la función de probabilidad Poisson}
+<<>>=
+local({
+  .x <- 0:16
+  plotDistr(.x, dpois(.x, lambda=6), xlab="x", ylab="Probability Mass", main="Poisson Distribution:  Mean=6", discrete=TRUE)
+})
+@
+
+\textbf{Ejemplo 3:}
+En un juego se disponen 15 globos llenos de agua, de los que 4 tienen premio. Los participantes en el juego, con los ojos vendados, golpean los globos con un bate por orden hasta que cada uno consigue romper 2.\\
+
+a) ¿Cuál es la probabilidad de que el primer participante consiga un premio?\\
+
+Para el primer participante la variable X="número de premios conseguidos entre 2 posibles" sigue una distribución hipergeométrica de parámetro m=11, n=4, K=2 ( 11 globos sin premio, 4 globos con premios y 2 globos que se seleccionaran para romperlos).\\
+
+El procedimiento para calcular la probabilidad solicitada es similar al descrito en las distribuciones anteriores, únicamente reemplazando la Distribución hipergeométrica y seleccionado la opción Probabilidades hipergeométricas. Con lo cual se mostrará el cuadro de dialogo que aparece abajo, y únicamente debemos especificar el número de objetos de la clase 1 (globos sin premio), el número de objetos de la clase 2 (globos con premios), y finalmente el número de objetos a extraer (globos a reventar por cada participante). Note que se muestra la distribución de frecuencia del experimento hipergeométrico.
+<<>>=
+# Table of Hypergeometric Probabilities
+local({
+  .Table <- data.frame(Probability=dhyper(0:2, m=11, n=4, k=2))
+  rownames(.Table) <- 0:2 
+  print(.Table)
+})
+@
+
+\section{GENERACIÓN DE MUESTRAS ALEATORIAS DE LAS DISTRIBUCIONES}
+\vspace{1cm}
+
+
+\textbf{Ejemplo 1:}
+Generar 100 números aleatorios de una distribución Binomial de parámetros n= 15 ensayos con probabilidad de éxito de 0.25.\\
+
+El procedimiento para generar muestras aleatorias de una distribución binomial es el siguiente: en el Menú Distribuciones seleccionamos la opción Distribuciones binomiales posteriormente se elige Distribución binomial, y finalmente la opción Muestra de una distribución binomial.
+
+<<>>=
+# Muestra de una distribución binomial
+
+BinomialSamples <- as.data.frame(matrix(rbinom(1*100, size=15, prob=0.25),  ncol=100))
+rownames(BinomialSamples) <- "sample"
+colnames(BinomialSamples) <- paste("obs", 1:100, sep="")
+@
+
+
+
+\end{document}
