@@ -84,3 +84,16 @@ colnames(UniformSamples) <- paste("obs", 1:100, sep="")
 *Para generar muestras de cualquier distribución el procedimiento es el mismo, teniendo en cuenta únicamente los parámetros que definen a cada una de las distribuciones.*
 
 
+-   **Ejercicio 1:** Generar una muestra de tamaño n=200 perteneciente a una población normal $N(10; 2^{2})$.
+
+```{r}
+# Muestra de una distribución normal
+NormalSamples <- as.data.frame(matrix(rnorm(1*200, mean=10, sd=4), ncol=200))
+rownames(NormalSamples)<-"sample"
+colnames(NormalSamples) <- paste("obs", 1:200, sep="")
+NormalSamples <- within(NormalSamples, {
+  mean <- rowMeans(NormalSamples[,1:200])
+})
+
+```
+
