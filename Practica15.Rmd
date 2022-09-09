@@ -97,3 +97,16 @@ NormalSamples <- within(NormalSamples, {
 
 ```
 
+-   **Ejercicio 2:** ¿Cuál es la probabilidad a la derecha de 18.55 para una Variable aleatoria X con distribución Chi-cuadrado de 12 grados de libertad?
+
+```{r}
+# Chi-Squared Cumulative Probabilities
+pchisq(c(18.55), df=12, lower.tail=FALSE)
+```
+
+-   **Ejercicio 3:** Generar 100 números aleatorios de una distribución Normal con media 4.5 y desviación estándar 0.75
+```{r}
+rnorm(100, 4.5,0.75)
+```
+
+-   **Ejercicio 4:** Generar números aleatorios de una distribución exponencial, si la media es 2500
